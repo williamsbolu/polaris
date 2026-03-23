@@ -35,4 +35,7 @@ export default function RootLayout({
   );
 }
 
+
+// The Authors package versions
 // convex@1.31.2
+// inngest@3.48.1
