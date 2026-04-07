@@ -6,8 +6,7 @@ import { firecrawl } from "@/lib/firecrawl";
 const URL_REGEX = /https?:\/\/[^\s]+/g;
 
 export const demoGenerate = inngest.createFunction(
-  { id: "demo-generate" },
-  { event: "demo/generate" },
+  { id: "demo-generate", triggers: { event: "demo/generate" } },
   async ({ event, step }) => {
     const { prompt } = event.data as { prompt: string };
 
@@ -36,7 +35,21 @@ export const demoGenerate = inngest.createFunction(
         model: google("gemini-2.5-flash"),
         // model: anthropic("claude-3-5-sonnet-20240620"),  // any model from the ai sdk can be used here
         prompt: finalPrompt,
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
       });
+    });
+  },
+);
+
+export const demoError = inngest.createFunction(
+  { id: "demo-error", triggers: { event: "demo/error" } },
+  async ({ event, step }) => {
+    await step.run("fail", async () => {
+      throw new Error("Inngest error: Something went wrong in the Inngest");
     });
   },
 );
