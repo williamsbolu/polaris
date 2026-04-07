@@ -6,6 +6,11 @@ export async function POST() {
     model: google("gemini-2.5-flash"),
     // model: anthropic("claude-3-5-sonnet-20240620"),  // any model from the ai sdk can be used here
     prompt: "Write a vegetarian lasagna recipe for 4 people.",
+    experimental_telemetry: {
+      isEnabled: true,
+      recordInputs: true,
+      recordOutputs: true,
+    },
   });
 
   return Response.json({ response });
