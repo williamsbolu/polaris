@@ -20,6 +20,7 @@ export const useCreateProject = () => {
       const existingProjects = localStore.getQuery(api.projects.get);
 
       if (existingProjects !== undefined) {
+        // eslint-disable-next-line react-hooks/purity
         const now = Date.now();
         const newProject = {
           _id: crypto.randomUUID() as Id<"projects">,
@@ -41,6 +42,9 @@ export const useCreateProject = () => {
 export const useRenameProject = () => {
   return useMutation(api.projects.rename).withOptimisticUpdate(
     (localStore, args) => {
+      // eslint-disable-next-line react-hooks/purity
+      const now = Date.now();
+
       const existingProject = localStore.getQuery(api.projects.getById, {
         id: args.id,
       });
@@ -53,20 +57,20 @@ export const useRenameProject = () => {
           {
             ...existingProject,
             name: args.name,
-            updatedAt: Date.now(),
+            updatedAt: now,
           },
         );
       }
 
       // Push it to a list of our existing project::
       const existingProjects = localStore.getQuery(api.projects.get);
-      if (existingProject !== undefined) {
+      if (existingProjects !== undefined) {
         localStore.setQuery(
           api.projects.get,
           {},
-          existingProjects?.map((project) => {
+          existingProjects.map((project) => {
             return project._id === args.id
-              ? { ...project, name: args.name, updatedAt: Date.now() }
+              ? { ...project, name: args.name, updatedAt: now }
               : project;
           }),
         );
