@@ -3,13 +3,14 @@
 import { Allotment } from "allotment";
 import { Navbar } from "./Navbar";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { ConversationSidebar } from "@/features/conversations/components/conversation-sidebar";
 
 const MIN_SIDEBAR_WIDTH = 200;
 const MAX_SIDEBAR_WIDTH = 800;
 const DEFAULT_CONVERSATION_SIDEBAR_WIDTH = 400;
 const DEFAULT_MAIN_SIZE = 1000;
 
-import "allotment/dist/style.css";
+// import "allotment/dist/style.css"; // Already to root layout
 
 export const ProjectIdLayout = ({
   children,
@@ -32,7 +33,7 @@ export const ProjectIdLayout = ({
             maxSize={MAX_SIDEBAR_WIDTH}
             preferredSize={DEFAULT_CONVERSATION_SIDEBAR_WIDTH}
           >
-            <div className="">cONVERSATION sIDEBAR</div>
+            <ConversationSidebar projectId={projectId} />
           </Allotment.Pane>
           <Allotment.Pane>{children}</Allotment.Pane>
         </Allotment>
