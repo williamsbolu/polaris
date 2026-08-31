@@ -114,3 +114,40 @@ export const getMessages = query({
       .collect();
   },
 });
+
+export const deleteConversation = mutation({
+  args: {
+    conversationId: v.id("conversations"),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+
+    const conversation = await ctx.db.get("conversations", args.conversationId);
+    if (!conversation) {
+      throw new Error("Conversation not found");
+    }
+
+    const project = await ctx.db.get("projects", conversation.projectId);
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
+    if (project.ownerId !== identity.subject) {
+      throw new Error("Unauthorized to access this project");
+    }
+
+    const conversationMessages = await ctx.db
+      .query("messages")
+      .withIndex("by_conversation", (q) =>
+        q.eq("conversationId", conversation._id),
+      )
+      .collect(); // ⚠️ Consider batching if message count can be large
+
+    for (const msg of conversationMessages) {
+      await ctx.db.delete("messages", msg._id);
+    }
+
+    await ctx.db.delete("conversations", conversation._id);
+  },
+});

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@clerk/nextjs/server";
 import { google } from "@ai-sdk/google";
+import { anthropic } from "@ai-sdk/anthropic";
 
 const suggestionSchema = z.object({
   suggestion: z
@@ -76,11 +77,12 @@ export async function POST(request: Request) {
 
     const { output } = await generateText({
       model: google("gemini-3.5-flash-lite"),
+      // model: anthropic("claude-haiku-4-5-20251001"),
       output: Output.object({ schema: suggestionSchema }),
       prompt,
     });
 
-    console.log({ data: output.suggestion });
+    console.log({ data: output });
 
     return NextResponse.json({ suggestion: output.suggestion });
   } catch (error) {

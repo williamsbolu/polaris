@@ -21,3 +21,7 @@ export const useCreateConversation = () => {
   return useMutation(api.conversations.create);
   // TODO: Add optimistic mutation
 };
+
+export const useDeleteConversation = () => {
+  return useMutation(api.conversations.deleteConversation);
+};

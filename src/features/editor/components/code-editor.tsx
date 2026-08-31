@@ -42,7 +42,7 @@ export const CodeEditor = ({
         customTheme,
         customSetup,
         languageExtension,
-        suggestion(fileName), // TODO: Review the suggestion extension setup implementation
+        // suggestion(fileName), // TODO: Review the suggestion extension setup implementation
         quickEdit(fileName), // TODO: Review the quick edit extension setup implementation
         selectionTooltip(), // TODO: Review the selection tooltip extension setup implementation
         keymap.of([indentWithTab]),
