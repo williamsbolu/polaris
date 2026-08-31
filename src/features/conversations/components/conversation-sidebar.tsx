@@ -106,6 +106,7 @@ export const ConversationSidebar = ({ projectId }: ConversationSidearProps) => {
     if (!conversationId) {
       conversationId = await handleCreateConversation();
       if (!conversationId) {
+        setLoading(false);
         return;
       }
     }

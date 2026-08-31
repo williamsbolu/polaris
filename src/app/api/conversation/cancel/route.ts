@@ -31,8 +31,8 @@ export async function POST(request: Request) {
     );
   }
 
-  // Find the processing message in this conversation
-  const [processingMsg] = await convex.query(
+  // Find the processing message in this conversation (most probably just a message) but we go with the array loop just incase
+  const processingMsgs = await convex.query(
     api.system.getProcessingMessagesByConversation,
     {
       internalKey,
@@ -41,27 +41,31 @@ export async function POST(request: Request) {
   );
 
   // If there are no processing messages, we break execution.
-  if (!processingMsg) {
+  if (processingMsgs.length === 0) {
     return NextResponse.json({ success: true, cancelled: false });
   }
 
   // Cancel the processing message
-  await inngest.send({
-    name: "message/cancel",
-    data: {
-      messageId: processingMsg._id,
-    },
-  });
+  const cancelledIds = await Promise.all(
+    processingMsgs.map(async (msg) => {
+      await inngest.send({
+        name: "message/cancel",
+        data: {
+          messageId: msg._id,
+        },
+      });
 
-  await convex.mutation(api.system.updateMessageStatus, {
-    internalKey,
-    messageId: processingMsg._id,
-    status: "cancelled",
-  });
+      await convex.mutation(api.system.updateMessageStatus, {
+        internalKey,
+        messageId: msg._id,
+        status: "cancelled",
+      });
+    }),
+  );
 
   return NextResponse.json({
     success: true,
     cancelled: true,
-    messageId: processingMsg._id,
+    messageIds: cancelledIds,
   });
 }
