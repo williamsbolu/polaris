@@ -112,6 +112,23 @@ export const getProcessingMessages = query({
   },
 });
 
+export const getProcessingMessagesByConversation = query({
+  args: {
+    internalKey: v.string(),
+    conversationId: v.id("conversations"),
+  },
+  handler: async (ctx, args) => {
+    validateInternalKey(args.internalKey);
+
+    return await ctx.db
+      .query("messages")
+      .withIndex("by_conversation_status", (q) =>
+        q.eq("conversationId", args.conversationId).eq("status", "processing"),
+      )
+      .collect();
+  },
+});
+
 // Used for Agent conversation context
 export const getRecentMessages = query({
   args: {

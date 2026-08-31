@@ -1,8 +1,10 @@
 "use client";
 
+import ky from "ky";
 import { formatDistanceToNow } from "date-fns";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import {
   CommandDialog,
@@ -35,6 +37,7 @@ export const PastConversationsDialog = ({
   onOpenChange,
   onSelect,
 }: PastConversationsDialogProps) => {
+  const [loading, setLoading] = useState(false);
   const conversations = useConversations(projectId);
   const deleteConversation = useDeleteConversation();
 
@@ -71,10 +74,17 @@ export const PastConversationsDialog = ({
                 </div>
 
                 <button
+                  disabled={loading}
                   className="group/button"
                   onClick={async (e) => {
                     try {
                       e.stopPropagation();
+                      setLoading(true);
+
+                      await ky.post("/api/conversation/cancel", {
+                        json: { conversationId: conversation._id },
+                      });
+
                       await deleteConversation({
                         conversationId: conversation._id,
                       });
@@ -83,6 +93,8 @@ export const PastConversationsDialog = ({
                       }
                     } catch {
                       toast.error("Failed to delete conversation");
+                    } finally {
+                      setLoading(false);
                     }
                   }}
                 >

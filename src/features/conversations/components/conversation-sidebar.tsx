@@ -43,6 +43,7 @@ export interface ConversationSidearProps {
 }
 
 export const ConversationSidebar = ({ projectId }: ConversationSidearProps) => {
+  const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
   const [selectedConversationId, setSelectedConversationId] =
     useState<Id<"conversations"> | null>(null);
@@ -96,6 +97,9 @@ export const ConversationSidebar = ({ projectId }: ConversationSidearProps) => {
       return;
     }
 
+    if (loading) return;
+    setLoading(true);
+
     let conversationId = activeConversationId;
 
     // incase the active conversation id is null
@@ -119,6 +123,7 @@ export const ConversationSidebar = ({ projectId }: ConversationSidearProps) => {
     }
 
     setInput("");
+    setLoading(false);
   };
 
   return (
@@ -201,14 +206,14 @@ export const ConversationSidebar = ({ projectId }: ConversationSidearProps) => {
                 placeholder="Ask Polaris anything..."
                 onChange={(e) => setInput(e.target.value)}
                 value={input}
-                disabled={isProcessing}
+                disabled={loading || isProcessing}
               />
             </PromptInputBody>
             <PromptInputFooter>
               <PromptInputTools />
               <PromptInputSubmit
-                disabled={isProcessing ? false : !input}
-                status={isProcessing ? "streaming" : undefined}
+                disabled={isProcessing || loading ? false : !input}
+                status={isProcessing || loading ? "streaming" : undefined}
               />
             </PromptInputFooter>
           </PromptInput>
