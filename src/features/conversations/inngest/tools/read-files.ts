@@ -49,13 +49,13 @@ export const createReadFilesTool = ({ internalKey }: ReadFilesToolOptions) => {
                 content: file.content,
               });
             }
-
-            if (results.length === 0) {
-              return "Error: No files found with provided IDs. Use listFiles to get valid fileIDs.";
-            }
-
-            return JSON.stringify(results);
           }
+
+          if (results.length === 0) {
+            return "Error: No files found with provided IDs. Use listFiles to get valid fileIDs.";
+          }
+
+          return JSON.stringify(results);
         });
       } catch (error) {
         return `Error reading files: ${error instanceof Error ? error.message : "Unknown error"}`;
