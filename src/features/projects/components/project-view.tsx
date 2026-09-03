@@ -4,12 +4,6 @@ import { useEffect, useState } from "react";
 import { SparkleIcon } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { Poppins } from "next/font/google";
-import {
-  uniqueNamesGenerator,
-  animals,
-  adjectives,
-  colors,
-} from "unique-names-generator";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

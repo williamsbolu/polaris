@@ -39,14 +39,15 @@ export const NewProjectDialog = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (message: PromptInputMessage) => {
-    if (!message.text) return;
+    const trimmedPrompt = message.text?.trim();
+    if (!trimmedPrompt) return;
 
     setIsSubmitting(true);
 
     try {
       const { projectId } = await ky
         .post("/api/projects/create-with-prompt", {
-          json: { prompt: message.text.trim() },
+          json: { prompt: trimmedPrompt },
         })
         .json<{ projectId: Id<"projects"> }>();
 
@@ -65,7 +66,7 @@ export const NewProjectDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent showCloseButton={false} className="sm:max-w-lg p-0">
         {/* Good recommendation to add the header title and description due to screen readers' and  accessibility reasons */}
-        <DialogHeader className="hidden">
+        <DialogHeader className="sr-only">
           <DialogTitle>What do you want to build?</DialogTitle>
           <DialogDescription>
             Describe your project and AI will help you create it.
@@ -82,7 +83,7 @@ export const NewProjectDialog = ({
           </PromptInputBody>
           <PromptInputFooter>
             <PromptInputTools />
-            <PromptInputSubmit disabled={!input || isSubmitting} />
+            <PromptInputSubmit disabled={!input.trim() || isSubmitting} />
           </PromptInputFooter>
         </PromptInput>
       </DialogContent>

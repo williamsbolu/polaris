@@ -16,7 +16,7 @@ import { convex } from "@/lib/convex-client";
 import { api } from "../../../../../convex/_generated/api";
 
 const requestSchema = z.object({
-  prompt: z.string().min(1),
+  prompt: z.string().trim().min(1),
 });
 
 export async function POST(request: Request) {
