@@ -1,8 +1,8 @@
 import { inngest } from "@/inngest/client";
 import {
   createAgent,
-  // anthropic,
-  gemini,
+  anthropic,
+  // gemini,
   createNetwork,
 } from "@inngest/agent-kit";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -120,24 +120,24 @@ export const processMessage = inngest.createFunction(
       const titleAgent = createAgent({
         name: "title-generator",
         system: TITLE_GENERATOR_SYSTEM_PROMPT,
-        // model: anthropic({
-        //   model: "claude-haiku-4-5-20251001",
-        //   apiKey: process.env.ANTHROPIC_API_KEY,
-        //   defaultParameters: {
-        //     temperature: 0,
-        //     max_tokens: 50,
-        //   },
-        // }),
-        model: gemini({
-          model: "gemini-2.5-flash",
-          apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+        model: anthropic({
+          model: "claude-haiku-4-5-20251001",
+          apiKey: process.env.ANTHROPIC_API_KEY,
           defaultParameters: {
-            generationConfig: {
-              temperature: 0,
-              maxOutputTokens: 50,
-            },
+            temperature: 0,
+            max_tokens: 50,
           },
         }),
+        // model: gemini({
+        //   model: "gemini-2.5-flash",
+        //   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+        //   defaultParameters: {
+        //     generationConfig: {
+        //       temperature: 0,
+        //       maxOutputTokens: 50,
+        //     },
+        //   },
+        // }),
       });
 
       const { output } = await titleAgent.run(message, { step });
@@ -174,21 +174,21 @@ export const processMessage = inngest.createFunction(
       name: "polaris",
       description: "An expert AI coding assistant",
       system: systemPrompt,
-      // model: anthropic({
-      //   // model: "claude-opus-4-20250514",
-      //   model: "claude-sonnet-4-6",
-      //   defaultParameters: { temperature: 0.3, max_tokens: 16000 },
-      // }),
-      model: gemini({
-        model: "gemini-2.5-flash",
-        apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
-        defaultParameters: {
-          generationConfig: {
-            temperature: 0.3,
-            maxOutputTokens: 8192,
-          },
-        },
+      model: anthropic({
+        // model: "claude-opus-4-20250514",
+        model: "claude-sonnet-4-6",
+        defaultParameters: { temperature: 0.3, max_tokens: 16000 },
       }),
+      // model: gemini({
+      //   model: "gemini-2.5-flash",
+      //   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+      //   defaultParameters: {
+      //     generationConfig: {
+      //       temperature: 0.3,
+      //       maxOutputTokens: 8192,
+      //     },
+      //   },
+      // }),
       tools: [
         createListFilesTool({ internalKey, projectId }),
         createReadFilesTool({ internalKey }),
