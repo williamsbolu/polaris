@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { FaGithub } from "react-icons/fa";
 import { Allotment } from "allotment";
 import { cn } from "@/lib/utils";
 import { Id } from "../../../../convex/_generated/dataModel";
