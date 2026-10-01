@@ -51,7 +51,7 @@ export const FileExplorer = ({ projectId }: { projectId: Id<"projects"> }) => {
 
   return (
     <div className="h-full bg-sidebar">
-      <ScrollArea>
+      <ScrollArea className="h-full">
         <div
           role="button"
           onClick={() => setIsOpen((value) => !value)}
@@ -128,6 +128,8 @@ export const FileExplorer = ({ projectId }: { projectId: Id<"projects"> }) => {
             ))}
           </>
         )}
+
+        <div className="py-20" />
       </ScrollArea>
     </div>
   );

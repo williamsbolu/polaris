@@ -4,7 +4,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 const validateInternalKey = (key: string) => {
-  const internalKey = process.env.POLARIS_CONVEX_INTERNAL_KEY;
+  const internalKey = process.env.POLARIS_CONVEX_INTERNAL_KEY; // NOTE:: This key reads from the convex server environment variables, Because Convex and Next.js run on entirely different infrastructures, they don't automatically share memory or environment variables.
 
   if (!internalKey) {
     throw new Error("POLARIS_CONVEX_INTERNAL_KEY is not configured");

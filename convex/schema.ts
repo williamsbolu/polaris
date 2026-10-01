@@ -62,6 +62,7 @@ export default defineSchema({
       ),
     ),
   })
+    .index("by_projectId", ["projectId"])
     .index("by_conversation", ["conversationId"])
     .index("by_project_status", ["projectId", "status"])
     .index("by_conversation_status", ["conversationId", "status"]),

@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { verifyAuth } from "./auth";
+import { Id } from "./_generated/dataModel";
 
 export const updateSettings = mutation({
   args: {
@@ -118,5 +119,62 @@ export const rename = mutation({
       name: args.name,
       updatedAt: Date.now(),
     });
+  },
+});
+
+export const deleteProject = mutation({
+  args: {
+    id: v.id("projects"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+
+    const project = await ctx.db.get("projects", args.id);
+
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
+    if (project.ownerId !== identity.subject) {
+      throw new Error("Unauthorized access to this project");
+    }
+
+    // Delete he project message and conversation
+    const projectMessages = await ctx.db
+      .query("messages")
+      .withIndex("by_projectId", (q) => q.eq("projectId", project._id))
+      .collect();
+
+    for (const msg of projectMessages) {
+      await ctx.db.delete("messages", msg._id);
+    }
+
+    const projectConversations = await ctx.db
+      .query("conversations")
+      .withIndex("by_project", (q) => q.eq("projectId", project._id))
+      .collect();
+
+    for (const conversation of projectConversations) {
+      await ctx.db.delete("conversations", conversation._id);
+    }
+
+    // Delete the project files``
+    const projectFiles = await ctx.db
+      .query("files")
+      .withIndex("by_project", (q) => q.eq("projectId", project._id))
+      .collect();
+
+    for (const file of projectFiles) {
+      await ctx.db.delete("files", file._id);
+    }
+
+    const fileWithStorageId = projectFiles.filter((file) => file.storageId);
+
+    for (const file of fileWithStorageId) {
+      await ctx.storage.delete(file.storageId as Id<"_storage">);
+    }
+
+    // Delete the project
+    await ctx.db.delete("projects", project._id);
   },
 });

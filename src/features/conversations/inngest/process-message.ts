@@ -229,8 +229,8 @@ export const processMessage = inngest.createFunction(
 
     // Extract the assistant's text response from the last agent result`
     const lastResult = result.state.results.at(-1);
-    console.log({ results: result.state.results });
-    console.log({ output: lastResult?.output });
+    // console.log({ results: result.state.results });
+    // console.log({ output: lastResult?.output });
     const textMessage = lastResult?.output.find(
       (m) => m.type === "text" && m.role === "assistant",
     );
